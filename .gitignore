@@ -1,0 +1,31 @@
+# Cau hinh that (chua ten may / thong tin ket noi) - chi commit config.example.json
+config.json
+
+# Du lieu & backup
+*.bak
+*.mdf
+*.ldf
+*.ndf
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Log & xuat tam
+*.log
+*.tmp
+
+# Power BI cache cuc bo
+.pbi/
+*.pbix.bak
+
+# He dieu hanh / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+powerbi/FinanceDW.pbix
+output/

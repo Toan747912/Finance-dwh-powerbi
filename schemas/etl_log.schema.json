@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Schema 2 - etl_log.json",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "database", "runs"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": "string", "minLength": 20},
+    "database": {"type": "string", "minLength": 1},
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["run_id", "status", "start_time", "end_time", "duration_sec", "steps"],
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["SUCCESS", "FAILED", "ROLLED_BACK"]},
+          "start_time": {"type": "string", "minLength": 10},
+          "end_time": {"type": "string", "minLength": 10},
+          "duration_sec": {"type": "number", "minimum": 0},
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["step", "start_time", "end_time", "rows_read", "rows_loaded", "rows_rejected", "status", "error_number", "error_message"],
+              "additionalProperties": false,
+              "properties": {
+                "step": {"type": "string", "minLength": 1},
+                "start_time": {"type": "string", "minLength": 10},
+                "end_time": {"type": "string", "minLength": 10},
+                "rows_read": {"type": "integer", "minimum": 0},
+                "rows_loaded": {"type": "integer", "minimum": 0},
+                "rows_rejected": {"type": "integer", "minimum": 0},
+                "status": {"enum": ["SUCCESS", "FAILED", "ROLLED_BACK"]},
+                "error_number": {"type": ["integer", "null"]},
+                "error_message": {"type": ["string", "null"]}
+              },
+              "if": {"properties": {"status": {"const": "FAILED"}}, "required": ["status"]},
+              "then": {"properties": {"error_message": {"type": "string", "minLength": 1}}}
+            }
+          }
+        }
+      }
+    }
+  }
+}

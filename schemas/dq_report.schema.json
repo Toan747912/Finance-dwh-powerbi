@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Schema 3 - dq_report.json",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "database", "batch_size", "summary", "tables", "rejects"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": "string", "minLength": 20},
+    "database": {"type": "string", "minLength": 1},
+    "batch_size": {"type": "integer", "minimum": 1},
+    "summary": {
+      "type": "object",
+      "required": ["table_count", "total_rows", "columns_with_nulls"],
+      "additionalProperties": false,
+      "properties": {
+        "table_count": {"type": "integer", "minimum": 0},
+        "total_rows": {"type": "integer", "minimum": 0},
+        "columns_with_nulls": {"type": "integer", "minimum": 0}
+      }
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["schema", "table", "row_count", "columns"],
+        "additionalProperties": false,
+        "properties": {
+          "schema": {"type": "string", "pattern": "^[A-Za-z0-9_]+$"},
+          "table": {"type": "string", "pattern": "^[A-Za-z0-9_]+$"},
+          "row_count": {"type": "integer", "minimum": 0},
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "dtype", "null_count", "null_pct", "distinct_count", "distinct_capped", "min", "max"],
+              "additionalProperties": false,
+              "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "dtype": {"type": "string"},
+                "null_count": {"type": "integer", "minimum": 0},
+                "null_pct": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+                "distinct_count": {"type": ["integer", "null"], "minimum": 0},
+                "distinct_capped": {"type": "boolean"},
+                "min": {"type": ["string", "number", "boolean", "null"]},
+                "max": {"type": ["string", "number", "boolean", "null"]}
+              }
+            }
+          }
+        }
+      }
+    },
+    "rejects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "reason", "count"],
+        "additionalProperties": false,
+        "properties": {
+          "step": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1},
+          "count": {"type": "integer", "minimum": 1}
+        }
+      }
+    }
+  }
+}

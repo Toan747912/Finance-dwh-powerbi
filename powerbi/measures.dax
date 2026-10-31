@@ -1,0 +1,65 @@
+// ===================================================================
+// Measure DAX. Moi khoi: New measure (Home > New measure) > dan nguyen 1 khoi.
+// Nen tao 1 bang rong "_Measures" (Home > Enter data > dat ten _Measures > Load) va chon bang do khi tao measure.
+// Quy uoc: chia cho 0 / ky truoc khong co du lieu -> BLANK (khong 0, khong loi).
+// ===================================================================
+
+Revenue = SUM(fact_sales[revenue])
+
+COGS = SUM(fact_sales[cogs])
+
+Gross Profit = SUM(fact_sales[gross_profit])
+
+Gross Margin % = DIVIDE([Gross Profit], [Revenue])
+
+Discount Amount = SUM(fact_sales[discount_amt])
+
+Discount % = DIVIDE([Discount Amount], [Revenue] + [Discount Amount])
+
+Orders = DISTINCTCOUNT(fact_sales[sales_order_id])
+
+Units Sold = SUM(fact_sales[order_qty])
+
+Avg Order Value = DIVIDE([Revenue], [Orders])
+
+Revenue MTD = CALCULATE([Revenue], DATESMTD(dim_date[full_date]))
+
+Revenue YTD = CALCULATE([Revenue], DATESYTD(dim_date[full_date]))
+
+Revenue PY = CALCULATE([Revenue], SAMEPERIODLASTYEAR(dim_date[full_date]))
+
+Is Period Complete =
+IF(
+    CALCULATE(COUNTROWS(dim_date), dim_date[is_month_complete] = FALSE()) = 0,
+    1,
+    0
+)
+
+Period Status =
+IF([Is Period Complete] = 1, "Đủ dữ liệu", "Chưa đủ dữ liệu - không so sánh YoY")
+
+Revenue YoY % =
+VAR py = [Revenue PY]
+RETURN
+    IF(
+        [Is Period Complete] = 0 || ISBLANK(py) || py = 0,
+        BLANK(),
+        DIVIDE([Revenue] - py, py)
+    )
+
+Purchase Amount = SUM(fact_purchasing[line_total])
+
+Purchase Orders = DISTINCTCOUNT(fact_purchasing[purchase_order_id])
+
+Quota Amount = SUM(fact_quota[quota_amount])
+
+Actual Revenue (Sales Reps) = CALCULATE([Revenue], dim_salesperson[salesperson_key] <> -1)
+
+Quota Attainment % =
+IF(
+    ISBLANK([Quota Amount]),
+    BLANK(),
+    DIVIDE([Actual Revenue (Sales Reps)], [Quota Amount])
+)
+
+No Data Message = IF(ISBLANK([Revenue]), "Không có dữ liệu cho bộ lọc đã chọn", BLANK())

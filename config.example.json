@@ -1,0 +1,7 @@
+{
+  "server": "localhost",
+  "database_source": "AdventureWorks2022",
+  "database_dw": "FinanceDW",
+  "auth_mode": "windows",
+  "batch_size": 50000
+}

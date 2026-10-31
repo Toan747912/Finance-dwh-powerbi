@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["server", "database_source", "database_dw", "auth_mode", "batch_size"],
+  "additionalProperties": false,
+  "properties": {
+    "server": {"type": "string", "minLength": 1},
+    "database_source": {"type": "string", "const": "AdventureWorks2022"},
+    "database_dw": {"type": "string", "pattern": "^[A-Za-z0-9_]+$"},
+    "auth_mode": {"enum": ["windows", "sql"]},
+    "batch_size": {"type": "integer", "minimum": 1000, "maximum": 500000}
+  }
+}
